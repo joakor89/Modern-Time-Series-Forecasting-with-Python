@@ -252,7 +252,7 @@ def mae(actuals, predictions):
 def mse(actuals, predictions):
     return np.nanmean(np.power(actuals-predictions, 2))
 
-def mase(actuals, predictions, insample):
+def mase(actuals, predictions, insample, seasonality=None):
     """
     Calculate the Mean Absolute Scaled Error (MASE).
     
