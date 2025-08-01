@@ -252,10 +252,10 @@ def mae(actuals, predictions):
 def mse(actuals, predictions):
     return np.nanmean(np.power(actuals-predictions, 2))
 
-def mase(actuals, predictions, insample, seasonality=None):
+def mase(actuals, predictions, insample, seasonality: int = 1):
     """
     Calculate the Mean Absolute Scaled Error (MASE).
-    
+
     Parameters:
     actuals : np.ndarray
         Actual observed values corresponding to the predictions.
@@ -263,26 +263,24 @@ def mase(actuals, predictions, insample, seasonality=None):
         Predicted values.
     insample : np.ndarray
         In-sample data to calculate the scaling factor based on a naive forecast.
+    seasonality : int, optional
+        Seasonal periodicity. Defaults to 1.
 
     Returns:
     float
         The MASE metric.
     """
-    # Calculate MAE of predictions
     mae_predictions = np.nanmean(np.abs(actuals - predictions))
     
-    # Shift the insample data to create a simple naive forecast
-    naive_forecast = np.roll(insample, 1)
-    # Assuming the first element is not a valid forecast
-    naive_forecast[0] = np.nan 
-    
-    # Calculate MAE of the naive forecast
-    mae_naive = np.nanmean(np.abs(insample - naive_forecast))
-    
-    # Calculate MASE
-    mase_value = mae_predictions / mae_naive
-    return mase_value
+    if seasonality >= len(insample):
+        raise ValueError("Seasonality is too large for the insample data")
 
+    naive_forecast = insample[:-seasonality]
+    naive_actual = insample[seasonality:]
+    
+    mae_naive = np.nanmean(np.abs(naive_actual - naive_forecast))
+
+    return mae_predictions / mae_naive if mae_naive != 0 else np.nan
 
 
 def mape(actuals, predictions):
