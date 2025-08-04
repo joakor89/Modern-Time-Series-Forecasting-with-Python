@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import pandas as pd
 from pandas.api.types import is_list_like
-from window_ops.rolling import (
+from src.window_ops.rolling import (
     seasonal_rolling_max,
     seasonal_rolling_mean,
     seasonal_rolling_min,
